@@ -203,12 +203,22 @@ export const searchPublicArticles = async (c: Context) => {
     try {
 
         const db = getDB()
-        const query = c.req.query('q') || ''
+        const query = c.req.query('q')?.trim() || ''
         const page = Math.max(1, parseInt(c.req.query('page') || '1', 10))
         const limit = Math.max(1, parseInt(c.req.query('limit') || '10', 10))
         const skip = (page - 1) * limit
 
-        const searchRegex = new RegExp(query, 'i')
+        const escapeRegex = (value: string) => {
+            return value.replace(
+                /[.*+?^${}()|[\]\\]/g,
+                '\\$&'
+            )
+        }
+
+        const searchRegex = new RegExp(
+            escapeRegex(query),
+            'i'
+        )
 
         const pipeline: any[] = [
             {

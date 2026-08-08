@@ -19,7 +19,7 @@ app.use('*', cors({
   credentials: true
 }))
 
-app.route('/api/users', userRouter)
+app.route('/api/auth', userRouter)
 app.route('/api/authors', authorRouter)
 app.route('/api/articles', articleRouter)
 
