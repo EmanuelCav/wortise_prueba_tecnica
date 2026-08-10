@@ -1,12 +1,8 @@
 import {
     Button,
     Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
+    useOverlayState,
 } from "@heroui/react";
-
-import { useState } from "react";
 
 import { useDeleteArticle } from "../../hooks/useDeleteArticle";
 
@@ -20,73 +16,117 @@ export function DeleteArticleDialog({
     articleTitle,
 }: DeleteArticleDialogProps) {
 
-    const [isOpen, setIsOpen] = useState(false);
+    const state = useOverlayState();
 
-    const deleteMutation = useDeleteArticle();
+    const deleteMutation =
+        useDeleteArticle();
 
     const handleDelete = async () => {
-        await deleteMutation.mutateAsync(articleId);
-        setIsOpen(false);
-    }
+        try {
+            await deleteMutation.mutateAsync(
+                articleId
+            );
+
+            state.close();
+        } catch {
+            // El error ya queda disponible
+            // en deleteMutation.isError
+        }
+    };
 
     return (
-        <>
+        <Modal state={state}>
+
+            {/* Botón que abre el modal */}
             <Button
                 variant="danger"
-                onPress={() => setIsOpen(true)}
+                size="sm"
+                onPress={state.open}
             >
                 Eliminar
             </Button>
 
-            <Modal
-                isOpen={isOpen}
-                onOpenChange={setIsOpen}
-            >
-                <ModalHeader>
-                    Eliminar artículo
-                </ModalHeader>
+            <Modal.Backdrop>
+                <Modal.Container
+                    size="sm"
+                >
+                    <Modal.Dialog>
 
-                <ModalBody>
-                    <p>
-                        ¿Estás seguro de que querés
-                        eliminar el artículo{" "}
-                        <strong>
-                            "{articleTitle}"
-                        </strong>
-                        ?
-                    </p>
+                        {({ close }) => (
+                            <>
+                                <Modal.Header>
+                                    <Modal.Heading>
+                                        Eliminar artículo
+                                    </Modal.Heading>
+                                </Modal.Header>
 
-                    <p className="text-sm text-danger">
-                        Esta acción no se puede deshacer.
-                    </p>
+                                <Modal.Body>
+                                    <div className="space-y-3">
 
-                    {deleteMutation.isError && (
-                        <p className="text-sm text-danger">
-                            {deleteMutation.error.message}
-                        </p>
-                    )}
-                </ModalBody>
+                                        <p className="text-sm text-default-600">
+                                            ¿Estás seguro de que
+                                            querés eliminar el
+                                            artículo{" "}
+                                            <strong className="text-foreground">
+                                                "{articleTitle}"
+                                            </strong>
+                                            ?
+                                        </p>
 
-                <ModalFooter>
-                    <Button
-                        variant="primary"
-                        onPress={() => setIsOpen(false)}
-                        isDisabled={deleteMutation.isPending}
-                    >
-                        Cancelar
-                    </Button>
+                                        <div className="rounded-lg border border-danger/20 bg-danger/5 p-3">
+                                            <p className="text-sm text-danger">
+                                                Esta acción no se
+                                                puede deshacer.
+                                            </p>
+                                        </div>
 
-                    <Button
-                        variant="danger"
-                        onPress={handleDelete}
-                        isDisabled={deleteMutation.isPending}
-                    >
-                        {deleteMutation.isPending
-                            ? "Eliminando..."
-                            : "Eliminar artículo"}
-                    </Button>
-                </ModalFooter>
-            </Modal>
-        </>
+                                        {deleteMutation.isError && (
+                                            <div className="rounded-lg border border-danger/20 bg-danger/5 p-3">
+                                                <p className="text-sm text-danger">
+                                                    {
+                                                        deleteMutation
+                                                            .error
+                                                            .message
+                                                    }
+                                                </p>
+                                            </div>
+                                        )}
+
+                                    </div>
+                                </Modal.Body>
+
+                                <Modal.Footer>
+
+                                    <Button
+                                        variant="secondary"
+                                        onPress={close}
+                                        isDisabled={
+                                            deleteMutation.isPending
+                                        }
+                                    >
+                                        Cancelar
+                                    </Button>
+
+                                    <Button
+                                        variant="danger"
+                                        onPress={handleDelete}
+                                        isDisabled={
+                                            deleteMutation.isPending
+                                        }
+                                    >
+                                        {deleteMutation.isPending
+                                            ? "Eliminando..."
+                                            : "Eliminar artículo"}
+                                    </Button>
+
+                                </Modal.Footer>
+                            </>
+                        )}
+
+                    </Modal.Dialog>
+                </Modal.Container>
+            </Modal.Backdrop>
+
+        </Modal>
     );
 }

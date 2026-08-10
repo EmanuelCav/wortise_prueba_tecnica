@@ -13,8 +13,7 @@ export function useCreateArticle() {
                 body: JSON.stringify({
                     title: data.title,
                     content: data.content,
-                    coverImageUrl:
-                        data.coverImageUrl || null,
+                    coverImageUrl: data.coverImageUrl,
                 }),
             }),
 

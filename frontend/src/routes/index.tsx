@@ -14,6 +14,7 @@ import {
 } from "react";
 
 import { ArticleCard } from "../components/card/ArticleCard";
+
 import { useAuthors } from "../hooks/useAuthors";
 import { useSearchArticles } from "../hooks/useSearchArticles";
 
@@ -42,6 +43,10 @@ function HomePage() {
     const articlesQuery =
         useSearchArticles(debouncedSearch);
 
+        console.log(articlesQuery.data?.data);
+        console.log(authorsQuery.data);
+        
+
     return (
         <div>
             <section className="border-b border-divider">
@@ -62,7 +67,6 @@ function HomePage() {
 
                     <div className="mt-8 w-full max-w-2xl">
                         <Input
-                            // size="lg"
                             type="search"
                             placeholder="Buscar por título, contenido o autor..."
                             value={search}
@@ -129,7 +133,6 @@ function HomePage() {
                 </div>
             </section>
 
-            {/* AUTHORS */}
             <section className="border-t border-divider">
                 <div className="mx-auto max-w-7xl px-6 py-16">
                     <div className="mb-8">
@@ -157,9 +160,9 @@ function HomePage() {
 
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         {authorsQuery.data?.map(
-                            (author) => (
+                            (author, index) => (
                                 <div
-                                    key={author.id}
+                                    key={index}
                                     className="rounded-xl border border-divider p-5"
                                 >
                                     <div className="mb-4 flex items-center gap-4">

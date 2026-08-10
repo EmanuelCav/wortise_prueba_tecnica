@@ -6,18 +6,20 @@ import {
     TextField,
 } from "@heroui/react";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 
-import { signUpSchema, type SignUpInput } from "../schemas/user.schema";
+import { signUpSchema, type SignUpInput } from "../../schemas/user.schema";
 
-import { useSignUp } from "../hooks/useSignUp";
+import { useSignUp } from "../../hooks/useSignUp";
 
-export const Route = createFileRoute("/signup")({
+export const Route = createFileRoute("/_guest/signup")({
     component: SignUpPage,
 });
 
 function SignUpPage() {
+
+    const navigate = useNavigate();
     const signUpMutation = useSignUp();
 
     const form = useForm({
@@ -37,6 +39,10 @@ function SignUpPage() {
                 name: value.name,
                 email: value.email,
                 password: value.password,
+            });
+
+            await navigate({
+                to: "/articles",
             });
         },
     });

@@ -1,7 +1,6 @@
 import {
   Button,
   Card,
-  CardContent,
 } from "@heroui/react";
 
 import {
@@ -13,7 +12,6 @@ import {
 import { useState } from "react";
 
 import { useMyArticles } from "../../../hooks/useMyArticles";
-
 import { DeleteArticleDialog } from "../../../components/form/DeleteArticleDialog";
 
 export const Route = createFileRoute(
@@ -22,6 +20,8 @@ export const Route = createFileRoute(
   component: MyArticlesPage,
 });
 
+const DEFAULT_ARTICLE_IMAGE = "/default-article.png";
+
 function MyArticlesPage() {
   const navigate = useNavigate();
 
@@ -29,17 +29,16 @@ function MyArticlesPage() {
 
   const articlesQuery = useMyArticles(page);
 
-  const articles =
-    articlesQuery.data?.data ?? [];
-
-  const pagination =
-    articlesQuery.data?.pagination;
+  const articles = articlesQuery.data?.data ?? [];
+  const pagination = articlesQuery.data?.pagination;
 
   return (
-    <div>
-      <div className="mb-8 flex items-center justify-between">
+    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+
+      <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+
         <div>
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-3xl font-bold tracking-tight">
             Mis artículos
           </h1>
 
@@ -49,117 +48,173 @@ function MyArticlesPage() {
         </div>
 
         <Link to="/articles/new">
-          <Button variant="primary">
+          <Button
+            variant="primary"
+            className="w-full sm:w-auto"
+          >
             Nuevo artículo
           </Button>
         </Link>
       </div>
 
       {articlesQuery.isLoading && (
-        <p className="text-default-500">
-          Cargando artículos...
-        </p>
+        <div className="flex min-h-60 items-center justify-center">
+          <p className="text-default-500">
+            Cargando artículos...
+          </p>
+        </div>
       )}
 
       {articlesQuery.isError && (
-        <p className="text-danger">
-          {articlesQuery.error.message}
-        </p>
+        <Card className="border border-danger/20">
+          <Card.Content className="p-6">
+            <div className="text-center">
+              <h2 className="font-semibold text-danger">
+                No se pudieron cargar los artículos
+              </h2>
+
+              <p className="mt-2 text-sm text-default-500">
+                {articlesQuery.error.message}
+              </p>
+
+              <Button
+                className="mt-5"
+                variant="primary"
+                onPress={() =>
+                  articlesQuery.refetch()
+                }
+              >
+                Intentar nuevamente
+              </Button>
+            </div>
+          </Card.Content>
+        </Card>
       )}
 
       {!articlesQuery.isLoading &&
+        !articlesQuery.isError &&
         articles.length === 0 && (
           <Card>
-            <CardContent className="items-center py-12 text-center">
+            <Card.Content className="flex flex-col items-center justify-center px-6 py-16 text-center">
+              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <span className="text-2xl">
+                  ✍️
+                </span>
+              </div>
+
               <h2 className="text-xl font-semibold">
                 Todavía no tenés artículos
               </h2>
 
-              <p className="mt-2 text-default-500">
+              <p className="mt-2 max-w-md text-default-500">
                 Empezá escribiendo tu primer
-                artículo.
+                artículo y compartí tus ideas
+                con la comunidad.
               </p>
 
               <Link
                 to="/articles/new"
-                className="mt-5"
+                className="mt-6"
               >
                 <Button variant="primary">
-                  Crear artículo
+                  Crear mi primer artículo
                 </Button>
               </Link>
-            </CardContent>
+            </Card.Content>
           </Card>
         )}
 
-      <div className="flex flex-col gap-4">
-        {articles.map((article) => (
-          <Card key={article.id}>
-            <CardContent>
-              <div className="flex items-start justify-between gap-6">
-                <div className="min-w-0 flex-1">
-                  {article.coverImageUrl && (
-                    <img
-                      src={
-                        article.coverImageUrl
-                      }
-                      alt=""
-                      className="mb-4 h-48 w-full rounded-lg object-cover"
-                    />
-                  )}
+      {!articlesQuery.isLoading &&
+        !articlesQuery.isError &&
+        articles.length > 0 && (
+          <div className="space-y-4">
 
-                  <h2 className="text-xl font-semibold">
-                    {article.title}
-                  </h2>
+            {articles.map((article, index) => (
+              <Card
+                key={article.id}
+                className="overflow-hidden transition-shadow hover:shadow-md"
+              >
+                <Card.Content className="p-0">
+                  <div className="flex flex-col sm:flex-row">
 
-                  <p className="mt-2 line-clamp-3 text-default-500">
-                    {article.content}
-                  </p>
+                    <div className="shrink-0 sm:w-56">
+                      <img
+                        src={
+                          article.coverImageUrl ||
+                          DEFAULT_ARTICLE_IMAGE
+                        }
+                        alt={`article-${index}`}
+                        className="h-48 w-full object-cover sm:h-full sm:min-h-52"
+                        onError={(event) => {
+                          event.currentTarget.src =
+                            DEFAULT_ARTICLE_IMAGE;
+                        }}
+                      />
+                    </div>
 
-                  <p className="mt-4 text-sm text-default-400">
-                    Creado el{" "}
-                    {new Date(
-                      article.createdAt
-                    ).toLocaleDateString()}
-                  </p>
-                </div>
+                    <div className="flex min-w-0 flex-1 flex-col p-5 sm:p-6">
 
-                <div className="flex shrink-0 gap-2">
-                  <Button
-                    variant="primary"
-                    onPress={() =>
-                      navigate({
-                        to: "/articles/$id/edit",
-                        params: {
-                          id: article.id,
-                        },
-                      })
-                    }
-                  >
-                    Editar
-                  </Button>
+                      <div className="min-w-0 flex-1">
+                        <h2 className="line-clamp-2 text-xl font-semibold">
+                          {article.title}
+                        </h2>
 
-                  <DeleteArticleDialog
-                    articleId={
-                      article.id
-                    }
-                    articleTitle={
-                      article.title
-                    }
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                        <p className="mt-2 line-clamp-3 text-sm leading-6 text-default-500">
+                          {article.content}
+                        </p>
+                      </div>
+
+                      <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+
+                        <p className="text-xs text-default-400">
+                          Creado el{" "}
+                          {new Date(
+                            article.createdAt
+                          ).toLocaleDateString(
+                            "es-AR"
+                          )}
+                        </p>
+
+                        <div className="flex shrink-0 gap-2">
+
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onPress={() =>
+                              navigate({
+                                to: "/articles/$id/edit",
+                                params: {
+                                  id: article.id,
+                                },
+                              })
+                            }
+                          >
+                            Editar
+                          </Button>
+                          <DeleteArticleDialog
+                            articleId={article.id}
+                            articleTitle={article.title}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Card.Content>
+              </Card>
+            ))}
+          </div>
+        )}
 
       {pagination &&
         pagination.totalPages > 1 && (
           <div className="mt-8 flex items-center justify-center gap-4">
+
             <Button
-              variant="primary"
-              isDisabled={page === 1}
+              variant="secondary"
+              isDisabled={
+                page === 1 ||
+                articlesQuery.isFetching
+              }
               onPress={() =>
                 setPage((current) =>
                   Math.max(
@@ -172,16 +227,23 @@ function MyArticlesPage() {
               Anterior
             </Button>
 
-            <span className="text-sm text-default-500">
-              Página {pagination.page} de{" "}
-              {pagination.totalPages}
-            </span>
+            <div className="min-w-32 text-center">
+              <p className="text-sm font-medium">
+                Página {pagination.page} de{" "}
+                {pagination.totalPages}
+              </p>
+
+              <p className="mt-1 text-xs text-default-400">
+                {pagination.total} artículos
+              </p>
+            </div>
 
             <Button
-              variant="primary"
+              variant="secondary"
               isDisabled={
                 page >=
-                pagination.totalPages
+                pagination.totalPages ||
+                articlesQuery.isFetching
               }
               onPress={() =>
                 setPage((current) =>

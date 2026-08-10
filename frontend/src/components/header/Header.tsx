@@ -1,18 +1,28 @@
 import { Button } from "@heroui/react";
-import { Link } from "@tanstack/react-router";
+import {
+    Link,
+    useNavigate,
+} from "@tanstack/react-router";
 
 import { authClient } from "../../lib/auth";
 
 export function Header() {
+    const navigate = useNavigate();
+
     const { data: session } = authClient.useSession();
 
     const handleLogout = async () => {
         await authClient.signOut();
+
+        await navigate({
+            to: "/login",
+        });
     };
 
     return (
         <header className="border-b border-divider">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+
                 <Link
                     to="/"
                     className="flex items-center gap-3"
@@ -42,7 +52,7 @@ export function Header() {
                             </Link>
 
                             <Button
-                                variant="primary"
+                                variant="danger"
                                 onPress={handleLogout}
                             >
                                 Salir

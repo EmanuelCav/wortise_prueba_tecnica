@@ -199,46 +199,111 @@ export const deleteArticle = async (c: Context) => {
 }
 
 export const searchPublicArticles = async (c: Context) => {
-
     try {
-
         const db = getDB()
-        const query = c.req.query('q')?.trim() || ''
-        const page = Math.max(1, parseInt(c.req.query('page') || '1', 10))
-        const limit = Math.max(1, parseInt(c.req.query('limit') || '10', 10))
+
+        const query =
+            c.req.query("q")?.trim() || ""
+
+        const page = Math.max(
+            1,
+            parseInt(
+                c.req.query("page") || "1",
+                10
+            )
+        )
+
+        const limit = Math.max(
+            1,
+            parseInt(
+                c.req.query("limit") || "10",
+                10
+            )
+        )
+
         const skip = (page - 1) * limit
 
         const escapeRegex = (value: string) => {
             return value.replace(
                 /[.*+?^${}()|[\]\\]/g,
-                '\\$&'
+                "\\$&"
             )
         }
 
         const searchRegex = new RegExp(
             escapeRegex(query),
-            'i'
+            "i"
         )
 
         const pipeline: any[] = [
             {
                 $lookup: {
-                    from: 'user',
-                    localField: 'userId',
-                    foreignField: 'id',
-                    as: 'author',
+                    from: "user",
+
+                    let: {
+                        articleUserId: "$userId",
+                    },
+
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $or: [
+                                        {
+                                            $eq: [
+                                                "$id",
+                                                "$$articleUserId",
+                                            ],
+                                        },
+                                        {
+                                            $eq: [
+                                                {
+                                                    $toString:
+                                                        "$_id",
+                                                },
+                                                "$$articleUserId",
+                                            ],
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+
+                        {
+                            $project: {
+                                _id: 0,
+                                name: 1,
+                                email: 1,
+                            },
+                        },
+                    ],
+
+                    as: "author",
                 },
             },
-            { $unwind: { path: '$author', preserveNullAndEmptyArrays: true } },
+
+            {
+                $unwind: {
+                    path: "$author",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
         ]
 
         if (query) {
             pipeline.push({
                 $match: {
                     $or: [
-                        { title: searchRegex },
-                        { content: searchRegex },
-                        { 'author.name': searchRegex },
+                        {
+                            title: searchRegex,
+                        },
+                        {
+                            content: searchRegex,
+                        },
+                        {
+                            "author.name":
+                                searchRegex,
+                        },
                     ],
                 },
             })
@@ -246,44 +311,89 @@ export const searchPublicArticles = async (c: Context) => {
 
         pipeline.push({
             $facet: {
-                metadata: [{ $count: 'total' }],
+                metadata: [
+                    {
+                        $count: "total",
+                    },
+                ],
+
                 data: [
-                    { $sort: { createdAt: -1 } },
-                    { $skip: skip },
-                    { $limit: limit },
+                    {
+                        $sort: {
+                            createdAt: -1,
+                        },
+                    },
+
+                    {
+                        $skip: skip,
+                    },
+
+                    {
+                        $limit: limit,
+                    },
+
                     {
                         $project: {
                             _id: 0,
-                            id: { $toString: '$_id' },
+
+                            id: {
+                                $toString: "$_id",
+                            },
+
                             title: 1,
+
                             content: 1,
+
                             coverImageUrl: 1,
+
                             createdAt: 1,
-                            authorName: '$author.name',
+
+                            authorName: {
+                                $ifNull: [
+                                    "$author.name",
+                                    "Autor desconocido",
+                                ],
+                            },
                         },
                     },
                 ],
             },
         })
 
-        const [result] = await db.collection('articles')
+        const [result] = await db
+            .collection("articles")
             .aggregate(pipeline)
             .toArray()
 
-        const data = result.data
-        const total = result.metadata[0]?.total || 0
+        const data = result?.data ?? []
+
+        const total =
+            result?.metadata?.[0]?.total ?? 0
 
         return c.json({
             data,
+
             pagination: {
                 page,
                 limit,
                 total,
-                totalPages: Math.ceil(total / limit),
+                totalPages: Math.ceil(
+                    total / limit
+                ),
             },
         })
-
     } catch (error) {
-        return c.json({ error: 'Error en la búsqueda de artículos' }, 500)
+        console.error(
+            "Error en searchPublicArticles:",
+            error
+        )
+
+        return c.json(
+            {
+                error:
+                    "Error en la búsqueda de artículos",
+            },
+            500
+        )
     }
 }

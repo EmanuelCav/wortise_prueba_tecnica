@@ -1,18 +1,19 @@
 import { Button, FieldError, Input, Label, TextField } from "@heroui/react";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 
-import { loginSchema, type LoginInput } from "../schemas/user.schema";
+import { loginSchema, type LoginInput } from "../../schemas/user.schema";
 
-import { useLogin } from "../hooks/useLogin";
+import { useLogin } from "../../hooks/useLogin";
 
-export const Route = createFileRoute("/login")({
+export const Route = createFileRoute("/_guest/login")({
     component: LoginPage,
 });
 
 function LoginPage() {
 
+    const navigate = useNavigate();
     const loginMutation = useLogin();
 
     const form = useForm({
@@ -27,6 +28,9 @@ function LoginPage() {
 
         onSubmit: async ({ value }) => {
             await loginMutation.mutateAsync(value);
+            await navigate({
+                to: "/articles",
+            });
         },
     });
 

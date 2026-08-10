@@ -1,23 +1,54 @@
-const API_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 
-export async function api<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    const response = await fetch(`${API_URL}${endpoint}`, {
-        ...options,
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json",
-            ...options?.headers,
-        },
-    });
+interface ApiErrorResponse {
+    error?: string;
+    message?: string;
+}
 
-    const data = await response.json();
+export async function api<T>(
+    endpoint: string,
+    options?: RequestInit
+): Promise<T> {
+    const response = await fetch(
+        `${API_URL}/api${endpoint}`,
+        {
+            ...options,
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                ...options?.headers,
+            },
+        }
+    );
+
+    const contentType =
+        response.headers.get("content-type");
+
+    const data = contentType?.includes("application/json")
+        ? await response.json()
+        : null;
 
     if (!response.ok) {
-        throw new Error(
-            data?.error || "Ocurrió un error en la petición"
-        );
+        let message = "Ocurrió un error inesperado";
+
+        if (
+            data &&
+            typeof data === "object"
+        ) {
+            const errorData =
+                data as ApiErrorResponse;
+
+            if (typeof errorData.error === "string") {
+                message = errorData.error;
+            } else if (
+                typeof errorData.message === "string"
+            ) {
+                message = errorData.message;
+            }
+        }
+
+        throw new Error(message);
     }
 
-    return data;
+    return data as T;
 }
