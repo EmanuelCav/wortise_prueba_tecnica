@@ -78,50 +78,103 @@ export const getArticle = async (c: Context) => {
 
     try {
 
-        const db = getDB()
-        const id = c.req.param('id')
+        const db = getDB();
+        const id = c.req.param("id");
 
         if (!ObjectId.isValid(id as string)) {
-            return c.json({ error: 'ID de artículo inválido' }, 400)
+            return c.json(
+                { error: "ID de artículo inválido" },
+                400
+            );
         }
 
         const pipeline = [
-            { $match: { _id: new ObjectId(id) } },
             {
-                $lookup: {
-                    from: 'user',
-                    localField: 'userId',
-                    foreignField: 'id',
-                    as: 'author',
+                $match: {
+                    _id: new ObjectId(id),
                 },
             },
-            { $unwind: { path: '$author', preserveNullAndEmptyArrays: true } },
+
+            {
+                $lookup: {
+                    from: "user",
+                    let: {
+                        articleUserId: "$userId",
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: [
+                                        {
+                                            $toString: "$_id",
+                                        },
+                                        "$$articleUserId",
+                                    ],
+                                },
+                            },
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                name: 1,
+                                email: 1,
+                            },
+                        },
+                    ],
+                    as: "author",
+                },
+            },
+
+            {
+                $unwind: {
+                    path: "$author",
+                    preserveNullAndEmptyArrays: false,
+                },
+            },
+
             {
                 $project: {
                     _id: 0,
-                    id: { $toString: '$_id' },
+                    id: {
+                        $toString: "$_id",
+                    },
                     title: 1,
                     content: 1,
                     coverImageUrl: 1,
                     createdAt: 1,
                     updatedAt: 1,
-                    authorName: '$author.name',
-                    authorEmail: '$author.email',
+                    authorName: "$author.name",
+                    authorEmail: "$author.email",
+                    authorId: "$userId",
                 },
             },
-        ]
+        ];
 
-        const [article] = await db.collection('articles').aggregate(pipeline).toArray()
+        const [article] = await db
+            .collection("articles")
+            .aggregate(pipeline)
+            .toArray();
 
         if (!article) {
-            return c.json({ error: 'Artículo no encontrado' }, 404)
+            return c.json(
+                { error: "Artículo no encontrado" },
+                404
+            );
         }
 
-        return c.json(article)
+        return c.json(article);
     } catch (error) {
-        return c.json({ error: 'Error al obtener el detalle del artículo' }, 500)
+        console.error(error);
+
+        return c.json(
+            {
+                error: "Error al obtener el detalle del artículo",
+            },
+            500
+        );
     }
-}
+};
 
 export const updateArticle = async (c: Context) => {
 

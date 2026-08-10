@@ -1,79 +1,32 @@
-import { Button } from "@heroui/react";
-import {
-    Link,
-    useNavigate,
-} from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+
+import { HeaderNavigation } from "./HeaderNavigation";
 
 import { authClient } from "../../lib/auth";
 
 export function Header() {
-    const navigate = useNavigate();
 
     const { data: session } = authClient.useSession();
 
-    const handleLogout = async () => {
-        await authClient.signOut();
-
-        await navigate({
-            to: "/login",
-        });
-    };
-
     return (
-        <header className="border-b border-divider">
-            <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-
+        <header className="border-b border-divider bg-white">
+            <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
                 <Link
                     to="/"
                     className="flex items-center gap-3"
                 >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-500 font-bold text-white">
-                        A
-                    </div>
+                    <img
+                        src="/logo.png"
+                        alt="Articles App"
+                        className="h-9 w-9 rounded-lg object-contain"
+                    />
 
-                    <span className="text-xl font-bold">
+                    <span className="text-lg font-bold sm:text-xl">
                         Articles App
                     </span>
                 </Link>
 
-                <div className="flex items-center gap-3">
-                    {session ? (
-                        <>
-                            <Link to="/articles">
-                                <Button variant="ghost">
-                                    Mis artículos
-                                </Button>
-                            </Link>
-
-                            <Link to="/articles/new">
-                                <Button variant="primary">
-                                    Escribir
-                                </Button>
-                            </Link>
-
-                            <Button
-                                variant="danger"
-                                onPress={handleLogout}
-                            >
-                                Salir
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            <Link to="/login">
-                                <Button variant="ghost">
-                                    Iniciar sesión
-                                </Button>
-                            </Link>
-
-                            <Link to="/signup">
-                                <Button variant="primary">
-                                    Registrarse
-                                </Button>
-                            </Link>
-                        </>
-                    )}
-                </div>
+                <HeaderNavigation session={session} />
             </div>
         </header>
     );

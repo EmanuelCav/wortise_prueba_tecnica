@@ -18,15 +18,19 @@ import { ArticleCard } from "../components/card/ArticleCard";
 import { useAuthors } from "../hooks/useAuthors";
 import { useSearchArticles } from "../hooks/useSearchArticles";
 
+import { authClient } from "../lib/auth";
+
 export const Route = createFileRoute("/")({
     component: HomePage,
 });
 
 function HomePage() {
-    
+
+    const { data: session } = authClient.useSession();
+
     const [search, setSearch] = useState("");
-    const [debouncedSearch, setDebouncedSearch] =
-        useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -38,14 +42,9 @@ function HomePage() {
         };
     }, [search]);
 
+    const articlesQuery = useSearchArticles(debouncedSearch);
+
     const authorsQuery = useAuthors();
-
-    const articlesQuery =
-        useSearchArticles(debouncedSearch);
-
-        console.log(articlesQuery.data?.data);
-        console.log(authorsQuery.data);
-        
 
     return (
         <div>
@@ -65,71 +64,76 @@ function HomePage() {
                         temas que más te interesan.
                     </p>
 
-                    <div className="mt-8 w-full max-w-2xl">
+                    <div className="mt-8 w-full max-w-4xl">
                         <Input
                             type="search"
                             placeholder="Buscar por título, contenido o autor..."
                             value={search}
-                            // onChange={setSearch}
+                            onChange={(event) =>
+                                setSearch(event.target.value)
+                            }
                             aria-label="Buscar artículos"
+                            size={42}
                         />
                     </div>
 
                     <Link
-                        to="/login"
+                        to={session ? "/articles" : "/login"}
                         className="mt-5"
                     >
-                        <Button
-                            size="lg"
-                        >
-                            Empezar a escribir
+                        <Button size="lg">
+                            {session
+                                ? "Escribir un artículo"
+                                : "Empezar a escribir"}
                         </Button>
                     </Link>
                 </div>
             </section>
 
-            <section className="mx-auto max-w-7xl px-6 py-16">
-                <div className="mb-8">
-                    <h2 className="text-3xl font-bold">
-                        {debouncedSearch
-                            ? "Resultados de búsqueda"
-                            : "Últimos artículos"}
-                    </h2>
+            <section className="bg-gray-100">
+                <div className="max-w-7xl mx-auto px-6 py-16">
+                    <div className="mb-8">
+                        <h2 className="text-3xl font-bold">
+                            {debouncedSearch
+                                ? "Resultados de búsqueda"
+                                : "Artículos"}
+                        </h2>
 
-                    {debouncedSearch && (
-                        <p className="mt-2 text-default-500">
-                            Resultados para "{debouncedSearch}"
+                        {debouncedSearch && (
+                            <p className="mt-2 text-default-500">
+                                Resultados para "{debouncedSearch}"
+                            </p>
+                        )}
+                    </div>
+
+                    {articlesQuery.isLoading && (
+                        <p className="text-default-500">
+                            Buscando artículos...
                         </p>
                     )}
-                </div>
 
-                {articlesQuery.isLoading && (
-                    <p className="text-default-500">
-                        Buscando artículos...
-                    </p>
-                )}
-
-                {articlesQuery.isError && (
-                    <p className="text-danger">
-                        {articlesQuery.error.message}
-                    </p>
-                )}
-
-                {articlesQuery.data?.data.length === 0 && (
-                    <p className="text-default-500">
-                        No encontramos artículos.
-                    </p>
-                )}
-
-                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                    {articlesQuery.data?.data.map(
-                        (article) => (
-                            <ArticleCard
-                                key={article.id}
-                                article={article}
-                            />
-                        )
+                    {articlesQuery.isError && (
+                        <p className="text-danger">
+                            {articlesQuery.error.message}
+                        </p>
                     )}
+
+                    {articlesQuery.data?.data.length === 0 && (
+                        <p className="text-default-500">
+                            No encontramos artículos.
+                        </p>
+                    )}
+
+                    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                        {articlesQuery.data?.data.map(
+                            (article) => (
+                                <ArticleCard
+                                    key={article.id}
+                                    article={article}
+                                />
+                            )
+                        )}
+                    </div>
                 </div>
             </section>
 
@@ -163,10 +167,10 @@ function HomePage() {
                             (author, index) => (
                                 <div
                                     key={index}
-                                    className="rounded-xl border border-divider p-5"
+                                    className="rounded-xl border border-divider p-5 bg-white"
                                 >
                                     <div className="mb-4 flex items-center gap-4">
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-100 text-lg font-bold text-primary-700">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-100 text-lg font-bold text-primary-700 border border-2">
                                             {author.name
                                                 .charAt(0)
                                                 .toUpperCase()}

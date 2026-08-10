@@ -1,3 +1,10 @@
+import {
+    Card,
+    CardContent,
+} from "@heroui/react";
+
+import { Link } from "@tanstack/react-router";
+
 import type { Article } from "../../hooks/useSearchArticles";
 
 interface ArticleCardProps {
@@ -7,27 +14,87 @@ interface ArticleCardProps {
 export function ArticleCard({
     article,
 }: ArticleCardProps) {
+    const imageUrl =
+        article.coverImageUrl ||
+        "/default-article.png";
+
     return (
-        <article className="rounded-xl border border-divider p-5">
-            <h3 className="mb-2 text-xl font-semibold">
-                {article.title}
-            </h3>
+        <Link
+            to="/articles/$id"
+            params={{
+                id: article.id,
+            }}
+            className="block h-full"
+        >
+            <Card
+                className="
+                    group
+                    h-full
+                    overflow-hidden
+                    border
+                    border-divider
+                    transition-all
+                    duration-200
+                    hover:-translate-y-1
+                    hover:shadow-lg
+                "
+            >
+                <div className="h-52 w-full overflow-hidden">
+                    <img
+                        src={imageUrl}
+                        alt={`Imagen de portada de ${article.title}`}
+                        className="
+                            h-full
+                            w-full
+                            object-cover
+                            transition-transform
+                            duration-300
+                            group-hover:scale-105
+                        "
+                    />
+                </div>
 
-            <p className="mb-4 line-clamp-3 text-sm text-default-500">
-                {article.content}
-            </p>
+                <CardContent className="flex flex-col p-5">
+                    <div className="flex flex-1 flex-col">
+                        <h2 className="line-clamp-2 text-xl font-bold tracking-tight">
+                            {article.title}
+                        </h2>
 
-            <div className="flex items-center justify-between text-sm text-default-400">
-                <span>
-                    Por {article.authorName || "Autor desconocido"}
-                </span>
+                        <p className="mt-3 line-clamp-3 text-sm leading-6 text-default-500">
+                            {article.content}
+                        </p>
+                    </div>
 
-                <span>
-                    {new Date(
-                        article.createdAt
-                    ).toLocaleDateString()}
-                </span>
-            </div>
-        </article>
+                    <div className="mt-6 flex items-center justify-between border-t border-divider pt-4">
+                        <div className="min-w-0">
+                            <p className="text-xs text-default-400">
+                                Escrito por
+                            </p>
+
+                            <p className="truncate text-sm font-medium">
+                                {article.authorName ||
+                                    "Autor desconocido"}
+                            </p>
+                        </div>
+
+                        <time
+                            dateTime={article.createdAt}
+                            className="shrink-0 text-xs text-default-400"
+                        >
+                            {new Date(
+                                article.createdAt
+                            ).toLocaleDateString(
+                                "es-AR",
+                                {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                }
+                            )}
+                        </time>
+                    </div>
+                </CardContent>
+            </Card>
+        </Link>
     );
 }

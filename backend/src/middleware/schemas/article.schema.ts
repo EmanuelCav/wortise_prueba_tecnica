@@ -6,24 +6,13 @@ export const createArticleSchema = z.object({
             error: "El título es obligatorio",
         })
         .trim()
-        .min(
-            3,
-            "El título debe tener al menos 3 caracteres"
-        )
-        .max(
-            120,
-            "El título no puede superar los 120 caracteres"
-        ),
+        .min(3, "El título debe tener al menos 3 caracteres")
+        .max(150, "El título no puede superar los 150 caracteres"),
 
     content: z
-        .string({
-            error: "El contenido es obligatorio",
-        })
+        .string({ error: "El contenido es obligatorio" })
         .trim()
-        .min(
-            10,
-            "El contenido debe tener al menos 10 caracteres"
-        ),
+        .min(10, "El contenido debe tener al menos 10 caracteres"),
 
     coverImageUrl: z.preprocess(
         (value) => {
@@ -43,5 +32,4 @@ export const createArticleSchema = z.object({
     ),
 });
 
-export const updateArticleSchema =
-    createArticleSchema.partial();
+export const updateArticleSchema = createArticleSchema.partial();

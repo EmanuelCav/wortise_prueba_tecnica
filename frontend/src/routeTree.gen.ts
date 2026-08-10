@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as GuestRouteRouteImport } from './routes/_guest/route'
 import { Route as GuestLoginRouteImport } from './routes/_guest/login'
 import { Route as GuestSignupRouteImport } from './routes/_guest/signup'
+import { Route as ArticlesIdRouteImport } from './routes/articles/$id'
 import { Route as AuthenticatedArticlesIndexRouteImport } from './routes/_authenticated/articles/index'
 import { Route as AuthenticatedArticlesNewRouteImport } from './routes/_authenticated/articles/new'
 import { Route as AuthenticatedArticlesIdEditRouteImport } from './routes/_authenticated/articles/$id/edit'
@@ -41,6 +42,11 @@ const GuestSignupRoute = GuestSignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => GuestRouteRoute,
 } as any)
+const ArticlesIdRoute = ArticlesIdRouteImport.update({
+  id: '/articles/$id',
+  path: '/articles/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedArticlesIndexRoute =
   AuthenticatedArticlesIndexRouteImport.update({
     id: '/articles/',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof GuestLoginRoute
   '/signup': typeof GuestSignupRoute
+  '/articles/$id': typeof ArticlesIdRoute
   '/articles/new': typeof AuthenticatedArticlesNewRoute
   '/articles/': typeof AuthenticatedArticlesIndexRoute
   '/articles/$id/edit': typeof AuthenticatedArticlesIdEditRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof GuestLoginRoute
   '/signup': typeof GuestSignupRoute
+  '/articles/$id': typeof ArticlesIdRoute
   '/articles/new': typeof AuthenticatedArticlesNewRoute
   '/articles': typeof AuthenticatedArticlesIndexRoute
   '/articles/$id/edit': typeof AuthenticatedArticlesIdEditRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   '/_guest': typeof GuestRouteRouteWithChildren
   '/_guest/login': typeof GuestLoginRoute
   '/_guest/signup': typeof GuestSignupRoute
+  '/articles/$id': typeof ArticlesIdRoute
   '/_authenticated/articles/new': typeof AuthenticatedArticlesNewRoute
   '/_authenticated/articles/': typeof AuthenticatedArticlesIndexRoute
   '/_authenticated/articles/$id/edit': typeof AuthenticatedArticlesIdEditRoute
@@ -93,6 +102,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/articles/$id'
     | '/articles/new'
     | '/articles/'
     | '/articles/$id/edit'
@@ -101,6 +111,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/articles/$id'
     | '/articles/new'
     | '/articles'
     | '/articles/$id/edit'
@@ -111,6 +122,7 @@ export interface FileRouteTypes {
     | '/_guest'
     | '/_guest/login'
     | '/_guest/signup'
+    | '/articles/$id'
     | '/_authenticated/articles/new'
     | '/_authenticated/articles/'
     | '/_authenticated/articles/$id/edit'
@@ -120,6 +132,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   GuestRouteRoute: typeof GuestRouteRouteWithChildren
+  ArticlesIdRoute: typeof ArticlesIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/signup'
       preLoaderRoute: typeof GuestSignupRouteImport
       parentRoute: typeof GuestRouteRoute
+    }
+    '/articles/$id': {
+      id: '/articles/$id'
+      path: '/articles/$id'
+      fullPath: '/articles/$id'
+      preLoaderRoute: typeof ArticlesIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/articles/': {
       id: '/_authenticated/articles/'
@@ -216,6 +236,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   GuestRouteRoute: GuestRouteRouteWithChildren,
+  ArticlesIdRoute: ArticlesIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

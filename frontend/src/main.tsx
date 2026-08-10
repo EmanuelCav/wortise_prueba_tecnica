@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -12,7 +13,14 @@ import "./globals.css";
 const rootElement = document.getElementById("root")!;
 
 function App() {
+
     const session = authClient.useSession();
+
+    useEffect(() => {
+        if (!session.isPending) {
+            router.invalidate();
+        }
+    }, [session.data, session.isPending]);
 
     if (session.isPending) {
         return (
@@ -34,7 +42,9 @@ function App() {
 }
 
 ReactDOM.createRoot(rootElement).render(
-    <QueryClientProvider client={queryClient}>
-        <App />
-    </QueryClientProvider>
+    <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <App />
+        </QueryClientProvider>
+    </React.StrictMode>
 );

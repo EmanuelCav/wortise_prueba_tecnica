@@ -7,10 +7,11 @@ export interface ArticleDetail {
     title: string;
     content: string;
     coverImageUrl: string | null;
+    authorName: string;
+    authorId: string;
+    authorEmail: string;
     createdAt: string;
     updatedAt: string;
-    authorName: string;
-    authorEmail: string;
 }
 
 export function useArticle(id: string) {
