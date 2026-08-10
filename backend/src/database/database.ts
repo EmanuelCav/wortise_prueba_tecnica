@@ -1,14 +1,12 @@
 import { MongoClient, Db } from 'mongodb'
-
-const uri = `${process.env.MONGODB_URI}`
+import { config } from '../config/config.js'
 
 let db: Db
+let client: MongoClient
 
 export const connectDB = async (): Promise<Db> => {
-
-    const client = new MongoClient(uri)
-
     if (!db) {
+        client = new MongoClient(config.mongoUri)
         await client.connect()
         db = client.db()
         console.log('Se ha conectado MongoDB correctamente')
@@ -18,10 +16,8 @@ export const connectDB = async (): Promise<Db> => {
 }
 
 export const getDB = (): Db => {
-
     if (!db) {
-        throw new Error('Error al obtener la base de datos')
+        throw new Error('Error al obtener la base de datos: Debe conectarse antes con connectDB()')
     }
-
     return db
 }
