@@ -81,8 +81,8 @@ function ArticleDetailPage() {
                     />
                 ) : (
                     <img
-                        src="/default-article.jpg"
-                        alt=""
+                        src="/default-article.png"
+                        alt="default-article"
                         className="mb-8 h-72 w-full rounded-2xl object-cover md:h-96"
                     />
                 )}
