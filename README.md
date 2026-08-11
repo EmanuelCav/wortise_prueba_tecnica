@@ -103,7 +103,7 @@ VITE_API_URL=http://localhost:3000
 
 | Variable             | Descripción                      |
 | -------------------- | -------------------------------- |
-| `FRONTEND_URL`       | URL del backend                  |
+| `VITE_API_URL`       | URL del backend                  |
 
 ### 5. Iniciar Vite
 
