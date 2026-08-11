@@ -107,7 +107,7 @@ VITE_API_URL=http://localhost:3000
 
 ### 5. Iniciar Vite
 
-Una vez instalado y configurado el frontend ejecutamos el siguiente comando para iniciar el cliente.
+Una vez instalado y configurado el frontend ejecutamos el siguiente comando para iniciar el cliente en Vite.
 
 ```
 
