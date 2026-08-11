@@ -67,7 +67,7 @@ BETTER_AUTH_URL=http://localhost:3000
 | `PORT`               | Puerto del servidor              |
 | `BETTER_AUTH_URL`    | URL del backend                  |
 
-### 3. Iniciar el servidor:
+### 3. Iniciar el servidor
 
 Una vez instalado y configurado el backend ejecutamos el siguiente comando para iniciar el servidor.
 
