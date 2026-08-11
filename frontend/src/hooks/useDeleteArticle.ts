@@ -6,6 +6,7 @@ import {
 import { api } from "../lib/api";
 
 export function useDeleteArticle() {
+
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -13,7 +14,6 @@ export function useDeleteArticle() {
             api(`/articles/${id}`, {
                 method: "DELETE",
             }),
-
         onSuccess: (_, id) => {
             queryClient.invalidateQueries({
                 queryKey: ["my-articles"],

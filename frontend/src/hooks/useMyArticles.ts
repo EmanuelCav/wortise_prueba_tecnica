@@ -14,7 +14,6 @@ export interface MyArticle {
 
 export interface MyArticlesResponse {
     data: MyArticle[];
-
     pagination: {
         page: number;
         limit: number;
@@ -24,19 +23,21 @@ export interface MyArticlesResponse {
 }
 
 export function useMyArticles(
+    userId: string | undefined,
     page: number,
     limit = 10
 ) {
     return useQuery({
-        queryKey: ["my-articles", page, limit],
+        queryKey: ["my-articles", userId, page, limit],
 
         queryFn: () =>
             api<MyArticlesResponse>(
                 `/articles?page=${page}&limit=${limit}`
             ),
 
-        placeholderData: (previousData) =>
-            previousData,
+        enabled: Boolean(userId),
+
+        placeholderData: (previousData) => previousData,
 
         staleTime: 30_000,
     });

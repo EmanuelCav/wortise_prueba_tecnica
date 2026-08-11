@@ -1,33 +1,31 @@
-import {
-  Button,
-  Card,
-} from "@heroui/react";
-
-import {
-  createFileRoute,
-  Link,
-  useNavigate,
-} from "@tanstack/react-router";
-
 import { useState } from "react";
+import { Button, Card } from "@heroui/react";
 
-import { useMyArticles } from "../../../hooks/useMyArticles";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+
+import Pagination from "../../../components/card/Pagination";
+import FirstArticle from "../../../components/form/FirstArticle";
 import { DeleteArticleDialog } from "../../../components/form/DeleteArticleDialog";
 
-export const Route = createFileRoute(
-  "/_authenticated/articles/"
-)({
+import { authClient } from "../../../lib/auth";
+
+import { useMyArticles } from "../../../hooks/useMyArticles";
+
+export const Route = createFileRoute("/_authenticated/articles/")({
   component: MyArticlesPage,
 });
 
 const DEFAULT_ARTICLE_IMAGE = "/default-article.png";
 
 function MyArticlesPage() {
+
   const navigate = useNavigate();
+
+  const { data: session } = authClient.useSession();
 
   const [page, setPage] = useState(1);
 
-  const articlesQuery = useMyArticles(page);
+  const articlesQuery = useMyArticles(session?.user?.id, page);
 
   const articles = articlesQuery.data?.data ?? [];
   const pagination = articlesQuery.data?.pagination;
@@ -94,34 +92,7 @@ function MyArticlesPage() {
       {!articlesQuery.isLoading &&
         !articlesQuery.isError &&
         articles.length === 0 && (
-          <Card>
-            <Card.Content className="flex flex-col items-center justify-center px-6 py-16 text-center">
-              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <span className="text-2xl">
-                  ✍️
-                </span>
-              </div>
-
-              <h2 className="text-xl font-semibold">
-                Todavía no tenés artículos
-              </h2>
-
-              <p className="mt-2 max-w-md text-default-500">
-                Empezá escribiendo tu primer
-                artículo y compartí tus ideas
-                con la comunidad.
-              </p>
-
-              <Link
-                to="/articles/new"
-                className="mt-6"
-              >
-                <Button variant="primary">
-                  Crear mi primer artículo
-                </Button>
-              </Link>
-            </Card.Content>
-          </Card>
+          <FirstArticle />
         )}
 
       {!articlesQuery.isLoading &&
@@ -215,56 +186,12 @@ function MyArticlesPage() {
 
       {pagination &&
         pagination.totalPages > 1 && (
-          <div className="mt-8 flex items-center justify-center gap-4">
-
-            <Button
-              variant="secondary"
-              isDisabled={
-                page === 1 ||
-                articlesQuery.isFetching
-              }
-              onPress={() =>
-                setPage((current) =>
-                  Math.max(
-                    1,
-                    current - 1
-                  )
-                )
-              }
-            >
-              Anterior
-            </Button>
-
-            <div className="min-w-32 text-center">
-              <p className="text-sm font-medium">
-                Página {pagination.page} de{" "}
-                {pagination.totalPages}
-              </p>
-
-              <p className="mt-1 text-xs text-default-400">
-                {pagination.total} artículos
-              </p>
-            </div>
-
-            <Button
-              variant="secondary"
-              isDisabled={
-                page >=
-                pagination.totalPages ||
-                articlesQuery.isFetching
-              }
-              onPress={() =>
-                setPage((current) =>
-                  Math.min(
-                    pagination.totalPages,
-                    current + 1
-                  )
-                )
-              }
-            >
-              Siguiente
-            </Button>
-          </div>
+          <Pagination
+            articlesQuery={articlesQuery}
+            page={page}
+            setPage={setPage}
+            pagination={pagination}
+          />
         )}
     </div>
   );

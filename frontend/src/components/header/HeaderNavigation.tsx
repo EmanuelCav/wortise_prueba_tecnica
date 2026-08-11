@@ -31,7 +31,6 @@ export function HeaderNavigation({
 
     return (
         <div className="relative">
-            {/* Desktop */}
             <nav className="hidden items-center gap-2 md:flex">
                 {session ? (
                     <>
@@ -86,7 +85,6 @@ export function HeaderNavigation({
                 </Button>
             </div>
 
-            {/* Mobile menu */}
             {isOpen && (
                 <div className="absolute right-0 top-12 z-50 w-64 rounded-xl border border-divider bg-white p-3 shadow-xl">
                     <nav className="flex flex-col gap-2">

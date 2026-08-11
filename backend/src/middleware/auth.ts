@@ -27,5 +27,4 @@ export const getAuthUser = (c: Context) => {
     }
 
     return user
-
 }

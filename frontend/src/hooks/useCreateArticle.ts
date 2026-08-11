@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "../lib/api";
+
 import type { CreateArticleInput } from "../schemas/article.schema";
 
 export function useCreateArticle() {
+
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -16,7 +18,6 @@ export function useCreateArticle() {
                     coverImageUrl: data.coverImageUrl,
                 }),
             }),
-
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["my-articles"],

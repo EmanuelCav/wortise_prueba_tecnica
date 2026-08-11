@@ -1,34 +1,21 @@
-import {
-    Button,
-    Card,
-    CardContent,
-    FieldError,
-    Input,
-    Label,
-    TextField,
-} from "@heroui/react";
+import { Button, Card, FieldError, Input, Label, TextField } from "@heroui/react";
 
-import {
-    createFileRoute,
-    Link,
-    useNavigate,
-    useRouter,
-} from "@tanstack/react-router";
-
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 
-import {
-    signUpSchema,
-    type SignUpInput,
-} from "../../schemas/user.schema";
+import HeaderAuth from "../../components/form/HeaderAuth";
+import FooterForm from "../../components/form/FooterForm";
 
 import { useSignUp } from "../../hooks/useSignUp";
+
+import { signUpSchema, type SignUpInput } from "../../schemas/user.schema";
 
 export const Route = createFileRoute("/_guest/signup")({
     component: SignUpPage,
 });
 
 function SignUpPage() {
+
     const navigate = useNavigate();
     const router = useRouter();
 
@@ -64,17 +51,11 @@ function SignUpPage() {
     return (
         <div className="flex min-h-screen items-center justify-center bg-blue-50 px-6 py-12">
             <Card className="w-full max-w-md border border-blue-100 shadow-xl">
-                <CardContent className="p-8">
-                    <div className="mb-8 text-center">
-
-                        <h1 className="text-3xl font-bold tracking-tight">
-                            Crear cuenta
-                        </h1>
-
-                        <p className="mt-2 text-default-500">
-                            Creá tu cuenta y empezá a compartir tus ideas
-                        </p>
-                    </div>
+                <Card.Content className="p-8">
+                    <HeaderAuth
+                        title="Crear cuenta"
+                        subtitle="Creá tu cuenta y empezá a compartir tus ideas"
+                    />
 
                     <form
                         className="flex flex-col gap-5"
@@ -247,19 +228,13 @@ function SignUpPage() {
                         </Button>
                     </form>
 
-                    <div className="mt-7 border-t border-divider pt-6 text-center">
-                        <p className="text-sm text-default-500">
-                            ¿Ya tenés una cuenta?
-                        </p>
+                    <FooterForm
+                        question="¿Ya tenés una cuenta?"
+                        navigate="login"
+                        action="Iniciar sesión"
+                    />
 
-                        <Link
-                            to="/login"
-                            className="mt-1 inline-block text-sm font-semibold text-primary-500 hover:underline"
-                        >
-                            Iniciar sesión
-                        </Link>
-                    </div>
-                </CardContent>
+                </Card.Content>
             </Card>
         </div>
     );

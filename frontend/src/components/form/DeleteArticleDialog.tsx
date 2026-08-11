@@ -9,35 +9,27 @@ import { useDeleteArticle } from "../../hooks/useDeleteArticle";
 interface DeleteArticleDialogProps {
     articleId: string;
     articleTitle: string;
+    onDeleted?: () => void | Promise<void>;
 }
 
 export function DeleteArticleDialog({
     articleId,
     articleTitle,
+    onDeleted,
 }: DeleteArticleDialogProps) {
-
+    
     const state = useOverlayState();
 
-    const deleteMutation =
-        useDeleteArticle();
+    const deleteMutation = useDeleteArticle();
 
     const handleDelete = async () => {
-        try {
-            await deleteMutation.mutateAsync(
-                articleId
-            );
-
-            state.close();
-        } catch {
-            // El error ya queda disponible
-            // en deleteMutation.isError
-        }
+        await deleteMutation.mutateAsync(articleId);
+        state.close();
+        await onDeleted?.();
     };
 
     return (
         <Modal state={state}>
-
-            {/* Botón que abre el modal */}
             <Button
                 variant="danger"
                 size="sm"
@@ -47,11 +39,8 @@ export function DeleteArticleDialog({
             </Button>
 
             <Modal.Backdrop>
-                <Modal.Container
-                    size="sm"
-                >
+                <Modal.Container size="sm">
                     <Modal.Dialog>
-
                         {({ close }) => (
                             <>
                                 <Modal.Header>
@@ -62,7 +51,6 @@ export function DeleteArticleDialog({
 
                                 <Modal.Body>
                                     <div className="space-y-3">
-
                                         <p className="text-sm text-default-600">
                                             ¿Estás seguro de que
                                             querés eliminar el
@@ -91,12 +79,10 @@ export function DeleteArticleDialog({
                                                 </p>
                                             </div>
                                         )}
-
                                     </div>
                                 </Modal.Body>
 
                                 <Modal.Footer>
-
                                     <Button
                                         variant="secondary"
                                         onPress={close}
@@ -118,15 +104,12 @@ export function DeleteArticleDialog({
                                             ? "Eliminando..."
                                             : "Eliminar artículo"}
                                     </Button>
-
                                 </Modal.Footer>
                             </>
                         )}
-
                     </Modal.Dialog>
                 </Modal.Container>
             </Modal.Backdrop>
-
         </Modal>
     );
 }

@@ -1,21 +1,17 @@
-import { Card, CardContent } from "@heroui/react";
+import { Card } from "@heroui/react";
 
-import {
-    createFileRoute,
-    useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { ArticleForm } from "../../../components/form/ArticleForm";
 
 import { useCreateArticle } from "../../../hooks/useCreateArticle";
 
-export const Route = createFileRoute(
-    "/_authenticated/articles/new"
-)({
+export const Route = createFileRoute("/_authenticated/articles/new")({
     component: NewArticlePage,
 });
 
 function NewArticlePage() {
+
     const navigate = useNavigate();
 
     const createMutation = useCreateArticle();
@@ -53,7 +49,7 @@ function NewArticlePage() {
             )}
 
             <Card>
-                <CardContent className="p-6">
+                <Card.Content className="p-6">
                     <ArticleForm
                         submitLabel="Publicar artículo"
                         isPending={
@@ -61,7 +57,7 @@ function NewArticlePage() {
                         }
                         onSubmit={handleSubmit}
                     />
-                </CardContent>
+                </Card.Content>
             </Card>
         </div>
     );

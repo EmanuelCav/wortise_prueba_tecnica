@@ -1,21 +1,14 @@
-import {
-    Button,
-    Card,
-    CardContent
-} from "@heroui/react";
+import { Button, Card } from "@heroui/react";
 
-import {
-    createFileRoute,
-    useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+
+import { DeleteArticleDialog } from "../../components/form/DeleteArticleDialog";
 
 import { useArticle } from "../../hooks/useArticle";
-import { useDeleteArticle } from "../../hooks/useDeleteArticle";
+
 import { authClient } from "../../lib/auth";
 
-export const Route = createFileRoute(
-    "/articles/$id"
-)({
+export const Route = createFileRoute("/articles/$id")({
     component: ArticleDetailPage,
 });
 
@@ -27,37 +20,11 @@ function ArticleDetailPage() {
 
     const articleQuery = useArticle(id);
 
-    const { data: session } =
-        authClient.useSession();
-
-    const deleteMutation =
-        useDeleteArticle();
+    const { data: session } = authClient.useSession();
 
     const article = articleQuery.data;
 
-    const isAuthor =
-        Boolean(
-            session?.user?.id &&
-            article?.authorId === session.user.id
-        );
-
-    const handleDelete = async () => {
-        if (!article) return;
-
-        const confirmed = window.confirm(
-            `¿Estás seguro de que querés eliminar "${article.title}"?`
-        );
-
-        if (!confirmed) return;
-
-        await deleteMutation.mutateAsync(
-            article.id
-        );
-
-        await navigate({
-            to: "/",
-        });
-    };
+    const isAuthor = Boolean(session?.user?.id && article?.authorId === session.user.id);
 
     if (articleQuery.isLoading) {
         return (
@@ -73,7 +40,7 @@ function ArticleDetailPage() {
         return (
             <div className="mx-auto max-w-4xl px-6 py-16">
                 <Card>
-                    <CardContent className="items-center py-12 text-center">
+                    <Card.Content className="items-center py-12 text-center">
                         <h1 className="text-2xl font-bold">
                             No se pudo cargar el artículo
                         </h1>
@@ -93,7 +60,7 @@ function ArticleDetailPage() {
                         >
                             Volver al inicio
                         </Button>
-                    </CardContent>
+                    </Card.Content>
                 </Card>
             </div>
         );
@@ -167,17 +134,15 @@ function ArticleDetailPage() {
                                 Editar
                             </Button>
 
-                            <Button
-                                variant="danger"
-                                isDisabled={
-                                    deleteMutation.isPending
+                            <DeleteArticleDialog
+                                articleId={article.id}
+                                articleTitle={article.title}
+                                onDeleted={() =>
+                                    navigate({
+                                        to: "/articles",
+                                    })
                                 }
-                                onPress={handleDelete}
-                            >
-                                {deleteMutation.isPending
-                                    ? "Eliminando..."
-                                    : "Eliminar"}
-                            </Button>
+                            />
                         </div>
                     )}
                 </div>

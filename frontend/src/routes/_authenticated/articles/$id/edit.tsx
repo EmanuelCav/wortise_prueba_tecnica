@@ -1,26 +1,18 @@
-import {
-    Card,
-    CardContent,
-} from "@heroui/react";
+import { Card } from "@heroui/react";
 
-import {
-    createFileRoute,
-    useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { ArticleForm } from "../../../../components/form/ArticleForm";
 
 import { useArticle } from "../../../../hooks/useArticle";
-
 import { useUpdateArticle } from "../../../../hooks/useUpdateArticle";
 
-export const Route = createFileRoute(
-    "/_authenticated/articles/$id/edit"
-)({
+export const Route = createFileRoute("/_authenticated/articles/$id/edit")({
     component: EditArticlePage,
 });
 
 function EditArticlePage() {
+    
     const { id } = Route.useParams();
 
     const navigate = useNavigate();
@@ -93,7 +85,7 @@ function EditArticlePage() {
             )}
 
             <Card>
-                <CardContent className="p-6">
+                <Card.Content className="p-6">
                     <ArticleForm
                         defaultValues={{
                             title: article.title,
@@ -107,7 +99,7 @@ function EditArticlePage() {
                         }
                         onSubmit={handleSubmit}
                     />
-                </CardContent>
+                </Card.Content>
             </Card>
         </div>
     );

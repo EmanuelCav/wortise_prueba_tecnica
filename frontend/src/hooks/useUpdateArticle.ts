@@ -13,6 +13,7 @@ interface UpdateArticleVariables {
 }
 
 export function useUpdateArticle() {
+
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -28,16 +29,13 @@ export function useUpdateArticle() {
                     coverImageUrl: data.coverImageUrl,
                 }),
             }),
-
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
                 queryKey: ["my-articles"],
             });
-
             queryClient.invalidateQueries({
                 queryKey: ["article", variables.id],
             });
-
             queryClient.invalidateQueries({
                 queryKey: ["articles"],
             });

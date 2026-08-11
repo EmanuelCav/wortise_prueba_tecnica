@@ -1,26 +1,13 @@
-import {
-    Button,
-    FieldError,
-    Input,
-    Label,
-    TextArea,
-    TextField,
-} from "@heroui/react";
+import { Button, FieldError, Input, Label, TextArea, TextField } from "@heroui/react";
 
 import { useForm } from "@tanstack/react-form";
 
-import {
-    createArticleSchema,
-    type CreateArticleInput,
-} from "../../schemas/article.schema";
+import { createArticleSchema, type CreateArticleInput } from "../../schemas/article.schema";
 
 interface ArticleFormProps {
     defaultValues?: CreateArticleInput;
-
     submitLabel: string;
-
     isPending?: boolean;
-
     onSubmit: (
         values: CreateArticleInput
     ) => Promise<void>;
@@ -31,21 +18,12 @@ export function ArticleForm({
         title: "",
         content: "",
         coverImageUrl: "",
-    },
-
-    submitLabel,
-
-    isPending = false,
-
-    onSubmit,
-}: ArticleFormProps) {
+    }, submitLabel, isPending = false, onSubmit }: ArticleFormProps) {
     const form = useForm({
         defaultValues,
-
         validators: {
             onChange: createArticleSchema,
         },
-
         onSubmit: async ({ value }) => {
             await onSubmit(value);
         },

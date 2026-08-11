@@ -19,7 +19,6 @@ function RootLayout() {
     return (
         <div className="min-h-screen bg-blue-100">
             <Header />
-
             <main>
                 <Outlet />
             </main>

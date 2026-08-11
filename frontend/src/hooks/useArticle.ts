@@ -17,14 +17,11 @@ export interface ArticleDetail {
 export function useArticle(id: string) {
     return useQuery({
         queryKey: ["article", id],
-
         queryFn: () =>
             api<ArticleDetail>(
                 `/articles/${id}`
             ),
-
         enabled: Boolean(id),
-
         staleTime: 30_000,
     });
 }

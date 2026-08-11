@@ -5,7 +5,6 @@ import { authClient } from "../lib/auth";
 export function useSession() {
     return useQuery({
         queryKey: ["auth", "session"],
-
         queryFn: async () => {
             const result = await authClient.getSession();
 

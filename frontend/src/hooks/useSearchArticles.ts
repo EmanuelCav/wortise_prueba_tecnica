@@ -11,9 +11,8 @@ export interface Article {
     authorName?: string;
 }
 
-interface ArticlesResponse {
+export interface ArticlesResponse {
     data: Article[];
-
     pagination: {
         page: number;
         limit: number;
@@ -23,12 +22,13 @@ interface ArticlesResponse {
 }
 
 export function useSearchArticles(query: string) {
+    
     const q = query.trim();
 
     return useQuery({
         queryKey: ["articles", "public-search", q],
-
         queryFn: () => {
+
             const params = new URLSearchParams();
 
             if (q) {
@@ -42,7 +42,6 @@ export function useSearchArticles(query: string) {
                 `/articles/public/search?${params.toString()}`
             );
         },
-
         staleTime: 1000 * 30,
     });
 }

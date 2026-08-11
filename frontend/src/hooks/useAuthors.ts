@@ -12,11 +12,9 @@ export interface Author {
 export function useAuthors() {
     return useQuery({
         queryKey: ["authors"],
-
         queryFn: () => {
             return api<Author[]>("/authors");
         },
-
         staleTime: 1000 * 60 * 5,
     });
 }

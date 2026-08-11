@@ -1,5 +1,3 @@
-const API_URL = import.meta.env.VITE_API_URL;
-
 interface ApiErrorResponse {
     error?: string;
     message?: string;
@@ -10,7 +8,7 @@ export async function api<T>(
     options?: RequestInit
 ): Promise<T> {
     const response = await fetch(
-        `${API_URL}/api${endpoint}`,
+        `${import.meta.env.VITE_API_URL}/api${endpoint}`,
         {
             ...options,
             credentials: "include",
@@ -21,22 +19,19 @@ export async function api<T>(
         }
     );
 
-    const contentType =
-        response.headers.get("content-type");
+    const contentType = response.headers.get("content-type");
 
     const data = contentType?.includes("application/json")
         ? await response.json()
         : null;
 
     if (!response.ok) {
+
         let message = "Ocurrió un error inesperado";
 
-        if (
-            data &&
-            typeof data === "object"
-        ) {
-            const errorData =
-                data as ApiErrorResponse;
+        if (data && typeof data === "object") {
+
+            const errorData = data as ApiErrorResponse;
 
             if (typeof errorData.error === "string") {
                 message = errorData.error;

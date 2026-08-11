@@ -1,34 +1,21 @@
-import {
-    Button,
-    Card,
-    CardContent,
-    FieldError,
-    Input,
-    Label,
-    TextField,
-} from "@heroui/react";
+import { Button, Card, FieldError, Input, Label, TextField } from "@heroui/react";
 
-import {
-    createFileRoute,
-    Link,
-    useNavigate,
-    useRouter,
-} from "@tanstack/react-router";
-
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 
-import {
-    loginSchema,
-    type LoginInput,
-} from "../../schemas/user.schema";
+import HeaderAuth from "../../components/form/HeaderAuth";
+import FooterForm from "../../components/form/FooterForm";
 
 import { useLogin } from "../../hooks/useLogin";
+
+import { loginSchema, type LoginInput } from "../../schemas/user.schema";
 
 export const Route = createFileRoute("/_guest/login")({
     component: LoginPage,
 });
 
 function LoginPage() {
+
     const navigate = useNavigate();
     const router = useRouter();
     const loginMutation = useLogin();
@@ -57,19 +44,14 @@ function LoginPage() {
     return (
         <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-blue-50 px-6 py-12">
             <Card className="w-full max-w-md border border-divider bg-white shadow-lg">
-                <CardContent className="p-8">
-                    <div className="mb-8 flex flex-col items-center text-center">
-
-                        <h1 className="text-3xl font-bold tracking-tight">
-                            Bienvenido
-                        </h1>
-
-                        <p className="mt-2 text-default-500">
+                <Card.Content className="p-8">
+                    <HeaderAuth
+                        title="Bienvenido"
+                        subtitle="
                             Iniciá sesión para continuar en
                             Articles App.
-                        </p>
-                    </div>
-
+                        "
+                    />
                     <form
                         className="flex flex-col gap-5"
                         onSubmit={(event) => {
@@ -171,19 +153,13 @@ function LoginPage() {
                         </Button>
                     </form>
 
-                    <div className="mt-6 border-t border-divider pt-6 text-center">
-                        <p className="text-sm text-default-500">
-                            ¿Todavía no tenés una cuenta?
-                        </p>
+                    <FooterForm
+                        question="¿Todavía no tenés una cuenta?"
+                        navigate="signup"
+                        action="Crear una cuenta"
+                    />
 
-                        <Link
-                            to="/signup"
-                            className="mt-2 inline-block text-sm font-semibold text-primary hover:underline"
-                        >
-                            Crear una cuenta
-                        </Link>
-                    </div>
-                </CardContent>
+                </Card.Content>
             </Card>
         </div>
     );
