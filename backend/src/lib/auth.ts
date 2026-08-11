@@ -16,4 +16,11 @@ export const auth = betterAuth({
     secret: config.better_auth_secret,
     trustedOrigins: [config.frontend_url],
     baseURL: config.better_auth_url,
+    advanced: {
+        useSecureCookies: true,
+        defaultCookieAttributes: {
+            secure: true,
+            sameSite: "none",
+        },
+    },
 })
