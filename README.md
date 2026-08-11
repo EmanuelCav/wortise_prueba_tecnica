@@ -134,7 +134,7 @@ Utilicé inteligencia articial para las siguientes funcionalidades:
 - Guiarme para configurar better-auth
 - Utilizar las herramientas de tanstack correctamente
 
-Utilicé ChatGPT
+Usé ChatGPT como herramienta
 
 # Autor
 
