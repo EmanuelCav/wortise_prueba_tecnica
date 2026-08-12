@@ -20,7 +20,7 @@ const Pagination = ({ page, setPage, articlesQuery, pagination }: PaginationProp
         <div className="mt-8 flex items-center justify-center gap-4">
 
             <Button
-                variant="secondary"
+                variant="primary"
                 isDisabled={
                     page === 1 ||
                     articlesQuery.isFetching
@@ -46,7 +46,7 @@ const Pagination = ({ page, setPage, articlesQuery, pagination }: PaginationProp
             </div>
 
             <Button
-                variant="secondary"
+                variant="primary"
                 isDisabled={
                     page >=
                     pagination.totalPages ||

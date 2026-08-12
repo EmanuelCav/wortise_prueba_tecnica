@@ -25,20 +25,16 @@ export interface MyArticlesResponse {
 export function useMyArticles(
     userId: string | undefined,
     page: number,
-    limit = 10
+    limit = 3
 ) {
     return useQuery({
         queryKey: ["my-articles", userId, page, limit],
-
         queryFn: () =>
             api<MyArticlesResponse>(
                 `/articles?page=${page}&limit=${limit}`
             ),
-
         enabled: Boolean(userId),
-
         placeholderData: (previousData) => previousData,
-
         staleTime: 30_000,
     });
 }
