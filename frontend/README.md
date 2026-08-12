@@ -13,7 +13,6 @@ El frontend está desplegado en **Render**.
 
 - Node.js
 - npm
-- MongoDB
 
 ### 1. Clonar el repositorio
 
