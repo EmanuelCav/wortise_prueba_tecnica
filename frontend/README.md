@@ -1,75 +1,95 @@
-# React + TypeScript + Vite
+# Wortise Prueba Técnica: Fullstack Dev Jr. - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Demo
 
-Currently, two official plugins are available:
+**Aplicación:**  
+https://wortise-prueba-tecnica.onrender.com
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+El frontend está desplegado en **Render**.
 
-## React Compiler
+## Instalación, Configuración y Ejecución
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Requisitos
 
-## Expanding the ESLint configuration
+- Node.js
+- npm
+- MongoDB
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1. Clonar el repositorio
 
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+git clone https://github.com/EmanuelCav/wortise_prueba_tecnica.git
 
 ```
+
+Una vez clonado el repositorio nos dirigimos a la carpeta de la aplicación.
+
+```
+
+cd wortise_prueba_tecnica
+
+```
+
+### 2. Configurar el frontend
+
+Dentro del proyecto (dentro de la carpeta wortise_prueba_tecnica) acudimos a configurar el frontend.
+
+```
+
+cd frontend
+
+```
+
+Instalamos todas sus dependencias.
+
+```
+
+npm install
+
+```
+
+completamos las variables de entorno (archivo .env) del frontend:
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+| Variable             | Descripción                      |
+| -------------------- | -------------------------------- |
+| `VITE_API_URL`       | URL del backend                  |
+
+### 3. Iniciar Vite
+
+Una vez instalado y configurado el frontend ejecutamos el siguiente comando para iniciar el cliente en Vite.
+
+```
+
+npm run dev
+
+```
+
+### 4. Abrir la url del frontend en el navegador
+
+Después de haber hecho los pasos anteriores correctamente, ya podemos ejecutar la aplicación.
+
+**Aplicación:**
+En desarrollo nos dirigimos a `http://localhost:5173`
+
+En producción navegamos al dominio configurado
+
+## Uso de IA 
+
+Utilicé inteligencia articial para las siguientes funcionalidades:
+
+- Construir el esqueleto de varios componentes para preparar el diseño del frontend
+- Mejorar algunas validaciones con zod
+- Guiarme para configurar better-auth
+- Utilizar las herramientas de tanstack correctamente
+
+Usé ChatGPT como herramienta
+
+# Autor
+
+Desarrollado por Emanuel Cavallin.
+Wortise Prueba Técnica: Fullstack Dev Jr
